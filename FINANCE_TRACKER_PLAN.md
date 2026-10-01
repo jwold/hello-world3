@@ -161,3 +161,33 @@ Dashboard-level filter: **Date is This month** (switch to last month when review
 5. **Supporting views** — Inbox, By Receipt, Bills, Income, All.
 6. **Home page layout** — dashboard front and center; "How to enter data" toggle with the weekly routine.
 7. **Test** with one real week of data and one split receipt; verify totals against the bank.
+
+---
+
+## Build log (2026-10-01)
+
+Built on the existing 💳 Transactions database (no new database).
+
+**Schema**
+- Renamed `Catgory` → `Category`, `Transaction Type` → `Type` (Income · Recurring Expense · Personal Expense).
+- Added: Status (Planned/Cleared), Receipt ID, Receipt (files), Reconciled (checkbox).
+- Formulas: Net Amount (sign flip), Week Of, Month, This Month, plus month-aware helpers
+  Income (Month), Recurring (Month), Personal (Month), Left to Spend (Month).
+  The helpers exist because the Notion API can't set a relative "this month" date filter on dashboard widgets.
+- Sample rows kept and re-mapped to the new Types/Categories. Added a 3-line Trader Joe's split example (TJ-1001).
+- Recurring templates skipped: bills are entered manually (user's choice).
+
+**Dashboard (same single dashboard view)**
+- Row 1: 💵 Income · 🔁 Recurring Bills (this month)
+- Row 2: ✅ Left to Spend (this month)
+- Row 3: 🛒 Personal Spending by Category (donut; center total = personal spent) · 📅 Spending Over Time (stacked Recurring vs Personal)
+- The old "Weekly Spending" widget was dropped by Notion during an API update and can't be re-added via API.
+  Its replacement is the Spending Over Time widget in row 3.
+
+**Tabs:** 📥 Inbox (to reconcile) · 💵 Income · 📋 All Transactions · 🔁 Bills · 🧾 By Receipt
+
+**Manual finishing touches (Notion UI only):**
+1. Spending Over Time → chart settings → X-axis Date → group by **Week**.
+2. Number tiles → show as **$** if they display plain numbers.
+3. Optional: + Add widget → number tile on "Personal (Month)" next to Left to Spend.
+4. Optional: Left to Spend tile → conditional color (green ≥ 0, red < 0).
